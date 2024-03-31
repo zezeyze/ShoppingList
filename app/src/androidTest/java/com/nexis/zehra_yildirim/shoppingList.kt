@@ -6,7 +6,7 @@ class Food(name: String, price: Double, val weight: Double) : Item(name, price)
 
 class Cloth(name: String, price: Double, val type: String) : Item(name, price)
 
-class shoppingList
+class ShoppingList
 {
     val items = mutableListOf<Item>()
     fun addItem()
@@ -26,7 +26,7 @@ class shoppingList
                 items.add(Food(foodName, foodPrice, foodWeight))
                 println("${foodName}" + " is added successfully!")
             }
-             2 ->
+            2 ->
             {
                 println("Enter the item name you want add:")
                 val clothName = readLine().orEmpty()
@@ -37,25 +37,66 @@ class shoppingList
                 items.add(Cloth(clothName, clothPrice, clothType))
                 println("${clothName}" + " is added successfully!")
             }
-         else -> println("Please select a valid number.")
+            else -> println("Please select a valid number.")
         }
     }
     fun displayItems()
+    {
+        if (items.isEmpty())
+        {
+            println("Shopping list is empty!!!")
+            return
+        }
+        println("Your shopping list:")
+        for ((index, item) in items.withIndex())
+        {
+            when (item)
+            {
+                is Food ->  println("${index + 1}. ${item.name} ${item.price}$ ${item.weight}kg")
+                is Cloth -> println("${index + 1}. ${item.name} ${item.price}$ ${item.type}")
+            }
+        }
+    }
     fun deleteItem()
+    {
+        if (items.isEmpty())
+        {
+            println("Shopping list is empty. There is nothing to delete.")
+            return
+        }
+        displayItems() // Silmeden önce listede hangi seçenekleri var göstermek amaçlı
+        println("Enter the item number you want to delete:")
+        val itemNumber = readLine()?.toIntOrNull() ?: 0
+        if (itemNumber in 1..items.size)
+        {
+            items.removeAt(itemNumber - 1)
+            println("$itemNumber is deleted successfully!")
+        }
+        else
+        {
+            println("Invalid item number! Please enter a valid item number.")
+        }
+    }
 }
 fun main()
 {
-        var choice: Int
-        println("** Welcome to Shopping List App ** " + "\n Make your choice : (1-2-3-4) \n " + "1. Add Item \n" + " 2. Display Item \n" + " 3. Delete Item \n" + " 4. Exit")
+    val shoppingList = ShoppingList()
+    var choice: Int
+    do
+    {
+        println("** Welcome to Shopping List App ** " +
+                "\n Make your choice : (1-2-3-4) \n " +
+                "1. Add Item \n" + " 2. Display Item \n" +
+                " 3. Delete Item \n" + " 4. Exit")
         print("Your choice is: ")
         choice = readLine()?.toIntOrNull() ?: 0
         when (choice)
         {
-            1 -> shoppingList().addItem()
-            2 -> shoppingList().displayItems()
-            3 -> shoppingList().deleteItem()
+            1 -> shoppingList.addItem()
+            2 -> shoppingList.displayItems()
+            3 -> shoppingList.deleteItem()
             4 -> println("Exiting...")
             else -> println("Please select a valid choice.")
         }
-
+    } while (choice != 4)
 }
